@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
-    "slug": "bolt-expo-nativewind",
+    "name": "Introvert Chat",
+    "slug": "introvert-chat",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,16 +9,54 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "icon": {
+        "light": "./assets/Light.png",
+        "dark": "./assets/Dark.png",
+        "tinted": "./assets/Tinted.png"
+      },
+      "bundleIdentifier": "com.keithkurak.introvertchat",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#5C8EDC"
+      },
+      "package": "com.keithkurak.introvertchat"
     },
     "web": {
       "bundler": "metro",
-      "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#5C8EDC",
+          "image": "./assets/Light.png",
+          "dark": {
+            "image": "./assets/Dark.png",
+            "backgroundColor": "#1E1E1E"
+          },
+          "imageWidth": 200
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1b9ea903-69a6-4f91-b3d1-bc877fe645a6"
+      }
+    },
+    "owner": "keith-kurak"
   }
 }
