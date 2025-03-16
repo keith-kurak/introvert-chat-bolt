@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     height: 40,
     lineHeight: 40,
+    verticalAlign: "middle"
   },
   content: {
     flex: 1,

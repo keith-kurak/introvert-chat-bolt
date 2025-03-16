@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
+    verticalAlign: "middle"
   },
   list: {
     paddingBottom: 80,

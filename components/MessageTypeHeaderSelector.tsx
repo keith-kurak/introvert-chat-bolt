@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import {
   X,
-  MessageSquare as MessageQuestion,
+  MessageCircleQuestion  as MessageQuestion,
   MessageCircle,
   Heading1,
   Heading2,

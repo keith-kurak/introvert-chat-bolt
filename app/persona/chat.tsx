@@ -34,6 +34,8 @@ import { ChatMessage } from '@/components/ChatMessage';
 import { HeaderOptions } from '@/components/HeaderOptions';
 import { MessageTypeHeaderSelector } from '@/components/MessageTypeHeaderSelector';
 import { HeaderContainer } from '@/components/HeaderContainer';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { spacing } from '@/theme';
 
 export default function ChatScreen() {
   const colorScheme = useColorScheme();
@@ -236,6 +238,10 @@ export default function ChatScreen() {
     .reverse();
 
   return (
+    <KeyboardAvoidingView
+        behavior="padding"
+        style={{ flex: 1 }}
+      >
     <View
       style={[
         styles.container,
@@ -294,69 +300,75 @@ export default function ChatScreen() {
           </>
         )}
       </HeaderContainer>
-      <FlatList
-        ref={flatListRef}
-        data={sortedMessages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ChatMessage
-            message={item}
-            persona={persona}
-            isSelected={selectedMessage?.id === item.id}
-            onDoubleTap={() => handleMessageDoubleTap(item)}
-            onLongPress={() => handleMessageLongPress(item)}
-            onToggleCheckbox={(messageId) => {
-              const message = persona.messages?.find((m) => m.id === messageId);
-              if (message) {
-                updateMessage(persona.id, messageId, {
-                  ...message,
-                  checked: !message.checked,
-                });
-              }
-            }}
-          />
-        )}
-        contentContainerStyle={styles.messageList}
-        inverted={true}
-      />
+        <FlatList
+          ref={flatListRef}
+          data={sortedMessages}
+          keyboardShouldPersistTaps="handled"
+          invertStickyHeaders={false}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
+          renderItem={({ item }) => (
+            <ChatMessage
+              message={item}
+              persona={persona}
+              isSelected={selectedMessage?.id === item.id}
+              onDoubleTap={() => handleMessageDoubleTap(item)}
+              onLongPress={() => handleMessageLongPress(item)}
+              onToggleCheckbox={(messageId) => {
+                const message = persona.messages?.find(
+                  (m) => m.id === messageId
+                );
+                if (message) {
+                  updateMessage(persona.id, messageId, {
+                    ...message,
+                    checked: !message.checked,
+                  });
+                }
+              }}
+            />
+          )}
+          contentContainerStyle={styles.messageList}
+          inverted={true}
+        />
 
-      <View
-        style={[
-          styles.inputContainer,
-          {
-            paddingBottom:insets.bottom,
-            backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
-          },
-        ]}
-      >
-        <TextInput
-          ref={inputRef}
+        <View
           style={[
-            styles.input,
+            styles.inputContainer,
             {
-              color: isDark ? '#FFFFFF' : '#000000',
-              backgroundColor: isDark ? '#2A2A2A' : '#F0F0F0',
+              paddingBottom: insets.bottom,
+              backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
             },
           ]}
-          value={messageText}
-          onChangeText={setMessageText}
-          placeholder="Type a message..."
-          placeholderTextColor={isDark ? '#777777' : '#999999'}
-          multiline
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            { backgroundColor: isDark ? '#4A90E2' : '#2E78B7' },
-          ]}
-          onPress={handleSend}
         >
-          <Send size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+          <TextInput
+            ref={inputRef}
+            style={[
+              styles.input,
+              {
+                color: isDark ? '#FFFFFF' : '#000000',
+                backgroundColor: isDark ? '#2A2A2A' : '#F0F0F0',
+              },
+            ]}
+            value={messageText}
+            onChangeText={setMessageText}
+            placeholder="Type a message..."
+            placeholderTextColor={isDark ? '#777777' : '#999999'}
+            multiline
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+          />
+          <TouchableOpacity
+            style={[
+              styles.sendButton,
+              { backgroundColor: isDark ? '#4A90E2' : '#2E78B7' },
+            ]}
+            onPress={handleSend}
+          >
+            <Send size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 

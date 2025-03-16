@@ -145,8 +145,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
-    marginVertical: 4,
     borderRadius: 8,
   },
   header1: {
