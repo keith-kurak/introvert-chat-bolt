@@ -5,18 +5,8 @@ import { useColorScheme, KeyboardAvoidingView, Platform } from 'react-native';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-declare global {
-  interface Window {
-    frameworkReady?: () => void;
-  }
-}
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-
-  useEffect(() => {
-    window.frameworkReady?.();
-  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1,  backgroundColor: colorScheme === 'dark' ? '#121212' : '#F5F5F5'  }}>
