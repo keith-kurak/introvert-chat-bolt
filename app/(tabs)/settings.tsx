@@ -15,6 +15,7 @@ import { Avatar } from '@/components/Avatar';
 import { useUpdates, reloadAsync } from 'expo-updates';
 import * as ImagePicker from 'expo-image-picker';
 import colors from '@/theme/colors';
+import { HeaderContainer } from '@/components/HeaderContainer';
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
@@ -51,25 +52,17 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView
+    <View
       style={[
         styles.container,
         { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
       ]}
     >
-      <View
-        style={[
-          styles.header,
-          {
-            backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
-            borderBottomColor: isDark ? '#333333' : '#DDDDDD',
-          },
-        ]}
-      >
+      <HeaderContainer>
         <Text style={[styles.title, { color: isDark ? '#FFFFFF' : '#000000' }]}>
           Settings
         </Text>
-      </View>
+      </HeaderContainer>
 
       <ScrollView style={styles.content}>
         <View style={styles.section}>
@@ -172,7 +165,7 @@ export default function SettingsScreen() {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -193,6 +186,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
+    height: 40,
+    lineHeight: 40,
   },
   content: {
     flex: 1,

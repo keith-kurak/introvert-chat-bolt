@@ -12,9 +12,10 @@ import { router } from 'expo-router';
 import { Plus } from 'lucide-react-native';
 import { usePersonaStore } from '@/store/personaStore';
 import { PersonaListItem } from '@/components/PersonaListItem';
+import { HeaderContainer } from '@/components/HeaderContainer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HeaderOptions } from '@/components/HeaderOptions';
-import { spacing, colors} from '@/theme';
+import { spacing, colors } from '@/theme';
 
 export default function PersonasScreen() {
   const colorScheme = useColorScheme();
@@ -104,16 +105,7 @@ export default function PersonasScreen() {
         { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
       ]}
     >
-      <View
-        style={[
-          styles.header,
-          {
-            paddingTop: insets.top,
-            backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
-            borderBottomColor: isDark ? '#333333' : '#DDDDDD',
-          },
-        ]}
-      >
+      <HeaderContainer>
         {selectedPersona ? (
           <HeaderOptions
             isDark={isDark}
@@ -130,8 +122,7 @@ export default function PersonasScreen() {
             Introvert Chat
           </Text>
         )}
-      </View>
-
+      </HeaderContainer>
       {personas.length === 0 ? (
         <View style={styles.emptyState}>
           <Text
@@ -203,6 +194,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    lineHeight: 40,
+    height: 40,
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
