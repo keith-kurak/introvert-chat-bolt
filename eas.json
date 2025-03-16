@@ -9,12 +9,15 @@
       "distribution": "internal",
       "channel": "development",
       "env": {
-        "IS_DEV": "1"
+        "APP_VARIANT": "DEV"
       }
     },
     "preview": {
       "distribution": "internal",
-      "channel": "preview"
+      "channel": "preview",
+      "env": {
+        "APP_VARIANT": "PREVIEW"
+      }
     },
     "preview:simulator": {
       "extends": "preview",
