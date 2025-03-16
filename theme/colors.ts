@@ -7,4 +7,5 @@ export default {
   grayLight: '#DDDDDD',
   grayDark: '#1E1E1E',
   highlight: '#5C8EDC',
+  border: '#EEEEEE',
 };

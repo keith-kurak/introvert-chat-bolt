@@ -19,6 +19,7 @@ import { Avatar } from '@/components/Avatar';
 import { Message, MessageType } from '@/types';
 import { ChatMessage } from '@/components/ChatMessage';
 import { HeaderOptions } from '@/components/HeaderOptions';
+import { MessageTypeHeaderSelector } from '@/components/MessageTypeHeaderSelector';
 
 export default function ChatScreen() {
   const colorScheme = useColorScheme();
@@ -217,108 +218,15 @@ export default function ChatScreen() {
             onSave={isEditing ? handleSend : undefined}
           />
         ) : showMessageTypes ? (
-          <>
-            <TouchableOpacity 
-              onPress={() => {
-                setShowMessageTypes(false);
-                Keyboard.dismiss();
-              }} 
-              style={styles.headerButton}
-            >
-              <X size={24} color={isDark ? '#FFFFFF' : '#000000'} />
-            </TouchableOpacity>
-            <View style={styles.messageTypeContainer}>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('question')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'question' && styles.messageTypeButtonActive
-                ]}
-              >
-                <MessageQuestion 
-                  size={24} 
-                  color={messageType === 'question' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('answer')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'answer' && styles.messageTypeButtonActive
-                ]}
-              >
-                <MessageCircle 
-                  size={24} 
-                  color={messageType === 'answer' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('paragraph')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'paragraph' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Text 
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: messageType === 'paragraph' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'
-                  }}
-                >
-                  ¶
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('header1')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'header1' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Heading1 
-                  size={24} 
-                  color={messageType === 'header1' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('header2')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'header2' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Heading2 
-                  size={24} 
-                  color={messageType === 'header2' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('listItem')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'listItem' && styles.messageTypeButtonActive
-                ]}
-              >
-                <List 
-                  size={24} 
-                  color={messageType === 'listItem' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('checkbox')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'checkbox' && styles.messageTypeButtonActive
-                ]}
-              >
-                <CheckSquare 
-                  size={24} 
-                  color={messageType === 'checkbox' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-            </View>
-          </>
+          <MessageTypeHeaderSelector
+            isDark={isDark}
+            messageType={messageType}
+            onClose={() => {
+              setShowMessageTypes(false);
+              Keyboard.dismiss();
+            }}
+            onMessageTypeSelect={handleMessageTypeSelect}
+          />
         ) : (
           <>
             <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
@@ -435,13 +343,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-around',
-  },
-  messageTypeButton: {
-    padding: 8,
-    borderRadius: 20,
-  },
-  messageTypeButtonActive: {
-    backgroundColor: '#4A90E2',
   },
   messageList: {
     paddingHorizontal: 16,

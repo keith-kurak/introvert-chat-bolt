@@ -44,6 +44,12 @@
           },
           "imageWidth": 200
         }
+      ],
+      [
+        "react-native-edge-to-edge",
+        {
+          "enforceNavigationBarContrast": false
+        }
       ]
     ],
     "experiments": {
