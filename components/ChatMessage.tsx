@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, TextStyle } from 'react-native';
 import { Avatar } from './Avatar';
 import { Message, Persona } from '@/types';
 import { Check, Square } from 'lucide-react-native';
+import colors from '@/theme/colors';
 
 interface ChatMessageProps {
   message: Message;
@@ -25,7 +26,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   const isDark = colorScheme === 'dark';
   
   const renderMessageContent = () => {
-    const baseTextStyle = { 
+    const baseTextStyle : TextStyle = { 
       color: isDark ? '#FFFFFF' : '#000000',
       textDecorationLine: message.checked ? 'line-through' : 'none',
     };
@@ -103,7 +104,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             <View 
               style={[
                 styles.answerBubble, 
-                { backgroundColor: isDark ? '#0B57D0' : '#4A90E2' }
+                { backgroundColor: colors.highlight }
               ]}
             >
               <Text style={styles.answerText}>
@@ -144,8 +145,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 8,
-    marginVertical: 4,
     borderRadius: 8,
   },
   header1: {
@@ -183,6 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+    paddingVertical: 6,
     flex: 1,
   },
   questionContainer: {

@@ -26,14 +26,16 @@ export const Avatar: React.FC<AvatarProps> = ({
     .substring(0, 2);
 
   const borderWidth = showBorder ? 2 : 0;
+
+  const sizeWithBorder = size + 4;
   
   return (
     <View style={[
       styles.container, 
       { 
-        width: size, 
-        height: size, 
-        borderRadius: size / 2,
+        width: sizeWithBorder, 
+        height: sizeWithBorder, 
+        borderRadius: sizeWithBorder / 2,
         borderWidth: color && showBorder ? borderWidth : 0,
         borderColor: color || 'transparent'
       }
@@ -69,11 +71,12 @@ export const Avatar: React.FC<AvatarProps> = ({
         <View style={[
           styles.emojiBadge, 
           { 
-            right: 0,
-            bottom: 0,
+            right: -3,
+            bottom: -3,
             width: size * 0.4,
             height: size * 0.4,
             borderRadius: size * 0.2,
+            backgroundColor: color ? `${color}` : '#E1E1E1'
           }
         ]}>
           <Text style={{ fontSize: size * 0.25 }}>{emoji}</Text>
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
+    //borderWidth: 1,
+    //borderColor: '#DDDDDD',
   },
 });
