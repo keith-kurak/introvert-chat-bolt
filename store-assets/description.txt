@@ -1,6 +1,6 @@
 In a world where we're constantly in apps talking to other people, sometimes you just a little space to yourself, right?
 
-Introducting Introvert Chat - the app for your inner monologue. It looks like a chat app, but you're just talking to yourself. Think of it as conversational note-taking. Organize your thoughts into multiple "personas" - your creative self who wants to think about what song you'll learn next on guitar, or your industrious self who is has a million home improvement project ideas and really wants to get back to them later. Even open up a persona chat just for workshopping your social media hot takes before posting them to the entire world.
+Introducing Introvert Chat - the app for your inner monologue. It looks like a chat app, but you're just talking to yourself. Think of it as conversational note-taking. Organize your thoughts into multiple "personas" - your creative self who wants to think about what song you'll learn next on guitar, or your industrious self who is has a million home improvement project ideas and really wants to get back to them later. Even open up a persona chat just for workshopping your social media hot takes before posting them to the entire world.
 
 By default, Introvert Chat starts in Q&A mode - ask yourself questions, and answer them. But you can break out into freeform text with headers, or drop tasks into the chat and check them off. 
 

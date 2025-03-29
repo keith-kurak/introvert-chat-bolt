@@ -95,3 +95,5 @@ expo-env.d.ts
 # @end expo-cli
 .expo/devices.json
 .expo/types/router.d.ts
+.DS_Store
+assets/.DS_Store
