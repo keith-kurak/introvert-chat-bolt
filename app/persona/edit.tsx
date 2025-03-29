@@ -65,6 +65,10 @@ export default function EditPersonaScreen() {
   };
 
   const pickImage = async () => {
+    if (avatar) {
+      setAvatar(null);
+      return;
+    }
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (status !== 'granted') {
@@ -112,8 +116,8 @@ export default function EditPersonaScreen() {
               color={color}
               emoji={emoji}
             />
-            <View style={styles.avatarEditBadge}>
-              <Text style={styles.avatarEditText}>Edit</Text>
+            <View style={[styles.avatarEditBadge, { backgroundColor: avatar ? 'red' : color }]}>
+              <Text style={styles.avatarEditText}>{avatar?"Clear":"+ Photo"}</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
   avatarEditBadge: {
     position: 'absolute',
     bottom: 0,
-    right: 0,
+    left: 0,
     backgroundColor: '#4A90E2',
     borderRadius: 12,
     paddingHorizontal: 8,

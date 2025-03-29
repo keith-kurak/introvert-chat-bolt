@@ -1,38 +1,56 @@
-import { useEffect, useState, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  FlatList, 
-  Platform, 
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Platform,
   useColorScheme,
   Alert,
   Keyboard,
-  TextInput
+  TextInput,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Send, MessageCircleQuestion as MessageQuestion, MessageCircle, Heading1, Heading2, List, SquareCheck as CheckSquare, X } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  SendHorizonal as Send,
+  MessageCircleQuestion as MessageQuestion,
+  MessageCircle,
+  Heading1,
+  Heading2,
+  List,
+  SquareCheck as CheckSquare,
+  X,
+} from 'lucide-react-native';
 import { usePersonaStore } from '@/store/personaStore';
 import { Avatar } from '@/components/Avatar';
 import { Message, MessageType } from '@/types';
 import { ChatMessage } from '@/components/ChatMessage';
 import { HeaderOptions } from '@/components/HeaderOptions';
+import { MessageTypeHeaderSelector } from '@/components/MessageTypeHeaderSelector';
+import { HeaderContainer } from '@/components/HeaderContainer';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import { spacing } from '@/theme';
 
 export default function ChatScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { personas, addMessage, updateMessage, deleteMessage } = usePersonaStore();
-  const persona = personas.find(p => p.id === id);
-  
+  const { personas, addMessage, updateMessage, deleteMessage } =
+    usePersonaStore();
+  const persona = personas.find((p) => p.id === id);
+
   const [messageText, setMessageText] = useState('');
   const [messageType, setMessageType] = useState<MessageType>('answer');
   const [showMessageTypes, setShowMessageTypes] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   const flatListRef = useRef<FlatList>(null);
   const inputRef = useRef<TextInput>(null);
   const messagesCountRef = useRef(persona?.messages?.length || 0);
@@ -58,12 +76,18 @@ export default function ChatScreen() {
   // Set default message type based on the last message
   useEffect(() => {
     if (persona?.messages && persona.messages.length > 0) {
-      const sortedMessages = [...persona.messages].sort((a, b) => b.timestamp - a.timestamp);
+      const sortedMessages = [...persona.messages].sort(
+        (a, b) => b.timestamp - a.timestamp
+      );
       const lastMessage = sortedMessages[0];
-      
+
       if (lastMessage.type === 'question') {
         setMessageType('answer');
-      } else if (lastMessage.type === 'header1' || lastMessage.type === 'header2' || lastMessage.type === 'paragraph') {
+      } else if (
+        lastMessage.type === 'header1' ||
+        lastMessage.type === 'header2' ||
+        lastMessage.type === 'paragraph'
+      ) {
         setMessageType('paragraph');
       } else if (lastMessage.type === 'listItem') {
         setMessageType('listItem');
@@ -80,7 +104,10 @@ export default function ChatScreen() {
 
   // Scroll to bottom when new messages are added
   useEffect(() => {
-    if (persona?.messages && persona.messages.length > messagesCountRef.current) {
+    if (
+      persona?.messages &&
+      persona.messages.length > messagesCountRef.current
+    ) {
       messagesCountRef.current = persona.messages.length;
       setTimeout(() => {
         //flatListRef.current?.scrollToIndex({ index: persona?.messages.length -1, animated: true });
@@ -90,15 +117,22 @@ export default function ChatScreen() {
 
   if (!persona) {
     return (
-      <SafeAreaView style={[styles.container, { backgroundColor: isDark ? '#121212' : '#F5F5F5' }]}>
-        <Text style={{ color: isDark ? '#FFFFFF' : '#000000' }}>Persona not found</Text>
+      <SafeAreaView
+        style={[
+          styles.container,
+          { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
+        ]}
+      >
+        <Text style={{ color: isDark ? '#FFFFFF' : '#000000' }}>
+          Persona not found
+        </Text>
       </SafeAreaView>
     );
   }
 
   const handleSend = () => {
     if (!messageText.trim()) return;
-    
+
     if (isEditing && selectedMessage) {
       updateMessage(persona.id, selectedMessage.id, {
         ...selectedMessage,
@@ -114,7 +148,7 @@ export default function ChatScreen() {
         timestamp: Date.now(),
       });
     }
-    
+
     setMessageText('');
   };
 
@@ -125,11 +159,17 @@ export default function ChatScreen() {
   const handleMessageDoubleTap = (message: Message) => {
     // Cycle through message types
     const types: MessageType[] = [
-      'question', 'answer', 'paragraph', 'header1', 'header2', 'listItem', 'checkbox'
+      'question',
+      'answer',
+      'paragraph',
+      'header1',
+      'header2',
+      'listItem',
+      'checkbox',
     ];
     const currentIndex = types.indexOf(message.type);
     const nextIndex = (currentIndex + 1) % types.length;
-    
+
     updateMessage(persona.id, message.id, {
       ...message,
       type: types[nextIndex],
@@ -153,21 +193,21 @@ export default function ChatScreen() {
   const handleDeleteMessage = () => {
     if (selectedMessage) {
       Alert.alert(
-        "Delete Message",
-        "Are you sure you want to delete this message?",
+        'Delete Message',
+        'Are you sure you want to delete this message?',
         [
           {
-            text: "Cancel",
-            style: "cancel"
+            text: 'Cancel',
+            style: 'cancel',
           },
-          { 
-            text: "Delete", 
+          {
+            text: 'Delete',
             onPress: () => {
               deleteMessage(persona.id, selectedMessage.id);
               setSelectedMessage(null);
             },
-            style: "destructive"
-          }
+            style: 'destructive',
+          },
         ]
       );
     }
@@ -185,7 +225,7 @@ export default function ChatScreen() {
   const handleInputFocus = () => {
     setShowMessageTypes(true);
   };
-  
+
   const handleInputBlur = () => {
     if (!isEditing) {
       setShowMessageTypes(false);
@@ -193,20 +233,22 @@ export default function ChatScreen() {
   };
 
   // Sort messages with oldest first (for proper display order)
-  const sortedMessages = [...(persona.messages || [])].sort((a, b) => 
-    a.timestamp - b.timestamp
-  ).reverse();
+  const sortedMessages = [...(persona.messages || [])]
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .reverse();
 
   return (
-    <View style={[styles.container, { backgroundColor: isDark ? '#121212' : '#F5F5F5' }]}>
-      <View style={[
-        styles.header, 
-        { 
-          paddingTop: insets.top,
-          backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
-          borderBottomColor: isDark ? '#333333' : '#DDDDDD' 
-        }
-      ]}>
+    <KeyboardAvoidingView
+        behavior="padding"
+        style={{ flex: 1 }}
+      >
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
+      ]}
+    >
+      <HeaderContainer>
         {selectedMessage ? (
           <HeaderOptions
             isDark={isDark}
@@ -217,194 +259,116 @@ export default function ChatScreen() {
             onSave={isEditing ? handleSend : undefined}
           />
         ) : showMessageTypes ? (
-          <>
-            <TouchableOpacity 
-              onPress={() => {
-                setShowMessageTypes(false);
-                Keyboard.dismiss();
-              }} 
-              style={styles.headerButton}
-            >
-              <X size={24} color={isDark ? '#FFFFFF' : '#000000'} />
-            </TouchableOpacity>
-            <View style={styles.messageTypeContainer}>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('question')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'question' && styles.messageTypeButtonActive
-                ]}
-              >
-                <MessageQuestion 
-                  size={24} 
-                  color={messageType === 'question' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('answer')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'answer' && styles.messageTypeButtonActive
-                ]}
-              >
-                <MessageCircle 
-                  size={24} 
-                  color={messageType === 'answer' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('paragraph')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'paragraph' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Text 
-                  style={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: messageType === 'paragraph' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'
-                  }}
-                >
-                  ¶
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('header1')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'header1' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Heading1 
-                  size={24} 
-                  color={messageType === 'header1' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('header2')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'header2' && styles.messageTypeButtonActive
-                ]}
-              >
-                <Heading2 
-                  size={24} 
-                  color={messageType === 'header2' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('listItem')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'listItem' && styles.messageTypeButtonActive
-                ]}
-              >
-                <List 
-                  size={24} 
-                  color={messageType === 'listItem' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => handleMessageTypeSelect('checkbox')}
-                style={[
-                  styles.messageTypeButton,
-                  messageType === 'checkbox' && styles.messageTypeButtonActive
-                ]}
-              >
-                <CheckSquare 
-                  size={24} 
-                  color={messageType === 'checkbox' ? '#FFFFFF' : isDark ? '#FFFFFF' : '#000000'} 
-                />
-              </TouchableOpacity>
-            </View>
-          </>
+          <MessageTypeHeaderSelector
+            isDark={isDark}
+            messageType={messageType}
+            onClose={() => {
+              setShowMessageTypes(false);
+              Keyboard.dismiss();
+            }}
+            onMessageTypeSelect={handleMessageTypeSelect}
+          />
         ) : (
           <>
-            <TouchableOpacity onPress={() => router.back()} style={styles.headerButton}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.headerButton}
+            >
               <ArrowLeft size={24} color={isDark ? '#FFFFFF' : '#000000'} />
             </TouchableOpacity>
             <View style={styles.personaInfo}>
-              <Avatar 
-                uri={persona.avatar} 
-                name={persona.name} 
-                size={32} 
+              <Avatar
+                uri={persona.avatar || null}
+                name={persona.name}
+                size={32}
                 color={persona.color}
                 emoji={persona.emoji}
               />
-              <Text style={[
-                styles.personaName, 
-                { 
-                  color: persona.color || (isDark ? '#FFFFFF' : '#000000'),
-                  marginLeft: 8
-                }
-              ]}>
+              <Text
+                style={[
+                  styles.personaName,
+                  {
+                    color: persona.color || (isDark ? '#FFFFFF' : '#000000'),
+                    marginLeft: 8,
+                  },
+                ]}
+              >
                 {persona.name}
               </Text>
             </View>
             <View style={{ width: 40 }} />
           </>
         )}
-      </View>
-
-      <FlatList
-        ref={flatListRef}
-        data={sortedMessages}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <ChatMessage
-            message={item}
-            persona={persona}
-            isSelected={selectedMessage?.id === item.id}
-            onDoubleTap={() => handleMessageDoubleTap(item)}
-            onLongPress={() => handleMessageLongPress(item)}
-            onToggleCheckbox={(messageId) => {
-              const message = persona.messages?.find(m => m.id === messageId);
-              if (message) {
-                updateMessage(persona.id, messageId, {
-                  ...message,
-                  checked: !message.checked
-                });
-              }
-            }}
-          />
-        )}
-        contentContainerStyle={styles.messageList}
-        inverted={true}
-      />
-
-      <View style={[
-        styles.inputContainer, 
-        { paddingBottom: keyboardStatus || Platform.OS === 'android' ? 8 : insets.bottom, backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF' }
-      ]}>
-        <TextInput
-          ref={inputRef}
-          style={[
-            styles.input, 
-            { 
-              color: isDark ? '#FFFFFF' : '#000000',
-              backgroundColor: isDark ? '#2A2A2A' : '#F0F0F0',
-            }
-          ]}
-          value={messageText}
-          onChangeText={setMessageText}
-          placeholder="Type a message..."
-          placeholderTextColor={isDark ? '#777777' : '#999999'}
-          multiline
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
+      </HeaderContainer>
+        <FlatList
+          ref={flatListRef}
+          data={sortedMessages}
+          keyboardShouldPersistTaps="handled"
+          invertStickyHeaders={false}
+          keyExtractor={(item) => item.id}
+          ItemSeparatorComponent={() => <View style={{ height: spacing.sm }} />}
+          renderItem={({ item }) => (
+            <ChatMessage
+              message={item}
+              persona={persona}
+              isSelected={selectedMessage?.id === item.id}
+              onDoubleTap={() => handleMessageDoubleTap(item)}
+              onLongPress={() => handleMessageLongPress(item)}
+              onToggleCheckbox={(messageId) => {
+                const message = persona.messages?.find(
+                  (m) => m.id === messageId
+                );
+                if (message) {
+                  updateMessage(persona.id, messageId, {
+                    ...message,
+                    checked: !message.checked,
+                  });
+                }
+              }}
+            />
+          )}
+          contentContainerStyle={styles.messageList}
+          inverted={true}
         />
-        <TouchableOpacity 
+
+        <View
           style={[
-            styles.sendButton, 
-            { backgroundColor: isDark ? '#4A90E2' : '#2E78B7' }
-          ]} 
-          onPress={handleSend}
+            styles.inputContainer,
+            {
+              paddingBottom: insets.bottom,
+              backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
+            },
+          ]}
         >
-          <Send size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+          <TextInput
+            ref={inputRef}
+            style={[
+              styles.input,
+              {
+                color: isDark ? '#FFFFFF' : '#000000',
+                backgroundColor: isDark ? '#2A2A2A' : '#F0F0F0',
+              },
+            ]}
+            value={messageText}
+            onChangeText={setMessageText}
+            placeholder="Type a message..."
+            placeholderTextColor={isDark ? '#777777' : '#999999'}
+            multiline
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+          />
+          <TouchableOpacity
+            style={[
+              styles.sendButton,
+              { backgroundColor: isDark ? '#4A90E2' : '#2E78B7' },
+            ]}
+            onPress={handleSend}
+          >
+            <Send size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
     </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -435,13 +399,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-around',
-  },
-  messageTypeButton: {
-    padding: 8,
-    borderRadius: 20,
-  },
-  messageTypeButtonActive: {
-    backgroundColor: '#4A90E2',
   },
   messageList: {
     paddingHorizontal: 16,

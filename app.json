@@ -44,6 +44,20 @@
           },
           "imageWidth": 200
         }
+      ],
+      [
+        "react-native-edge-to-edge",
+        {
+          "enforceNavigationBarContrast": false
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.0"
+          }
+        }
       ]
     ],
     "experiments": {
@@ -57,6 +71,12 @@
         "projectId": "1b9ea903-69a6-4f91-b3d1-bc877fe645a6"
       }
     },
-    "owner": "keith-kurak"
+    "owner": "keith-kurak",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1b9ea903-69a6-4f91-b3d1-bc877fe645a6"
+    }
   }
 }
