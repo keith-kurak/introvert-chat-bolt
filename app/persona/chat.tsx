@@ -18,7 +18,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router';
 import {
   ArrowLeft,
-  Send,
+  SendHorizonal as Send,
   MessageCircleQuestion as MessageQuestion,
   MessageCircle,
   Heading1,

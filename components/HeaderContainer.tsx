@@ -15,7 +15,7 @@ export function HeaderContainer({ children }: HeaderContainerProps) {
     <View style={[
       styles.header,
       {
-        paddingTop: insets.top,
+        paddingTop: insets.top + 8,
         backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
         borderBottomColor: isDark ? '#333333' : '#DDDDDD',
       }
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 8,
     borderBottomWidth: 1,
   },
 }); 
