@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "IS_DEV=1 expo start",
-    "start:demo": "IS_DEMO=1 expo start",
+    "start:demo": "EXPO_PUBLIC_IS_DEMO=1 expo start",
     "dev": "EXPO_NO_TELEMETRY=1 expo start",
     "build:web": "expo export --platform web",
     "lint": "expo lint"

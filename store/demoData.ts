@@ -73,6 +73,13 @@ export const demoPersonas: Persona[] = [
         type: 'listItem',
         timestamp: Date.now() - 6900000,
       },
+      {
+        id: 'msg-13',
+        content: 'Write that TPS report',
+        type: 'checkbox',
+        checked: false,
+        timestamp: Date.now() - 3200000,
+      },
     ],
   },
   {
