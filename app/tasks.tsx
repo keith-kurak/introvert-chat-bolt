@@ -94,7 +94,6 @@ export default function TasksScreen() {
       <TouchableOpacity
         style={[
           styles.taskItem,
-          { backgroundColor: isDark ? '#2A2A2A' : '#FFFFFF' },
         ]}
         onPress={() => handleCompleteTask(item.personaId, item.id)}
       >
@@ -152,14 +151,6 @@ export default function TasksScreen() {
           renderItem={renderTask}
           keyExtractor={(task) => task.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => (
-            <View
-              style={[
-                styles.separator,
-                { backgroundColor: isDark ? '#333333' : '#DDDDDD' },
-              ]}
-            />
-          )}
         />
       </View>
     );
@@ -224,7 +215,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.md,
-    borderRadius: 8,
     gap: spacing.sm,
   },
   taskText: {
