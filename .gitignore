@@ -135,3 +135,4 @@ dist
 expo-env.d.ts
 # @end expo-cli
 app.json
+.expo/types/router.d.ts
