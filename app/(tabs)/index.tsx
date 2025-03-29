@@ -268,9 +268,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.md,
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-    borderRadius: 8,
     gap: spacing.sm,
   },
   openTasksText: {
