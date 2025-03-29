@@ -75,16 +75,21 @@ export default function TasksScreen() {
     >
   );
 
-  const handleCompleteTask = (personaId: string, taskId: string) => {
+  const handleToggleTask = (personaId: string, taskId: string) => {
     // Update the local state first
-    setCompletedTaskIds((prev) => {
+    setCompletedTaskIds(prev => {
       const newSet = new Set(prev);
-      newSet.add(taskId);
+      if (newSet.has(taskId)) {
+        newSet.delete(taskId);
+      } else {
+        newSet.add(taskId);
+      }
       return newSet;
     });
 
     // Then update the store
-    updateMessage(personaId, taskId, { checked: true });
+    const isCurrentlyCompleted = completedTaskIds.has(taskId);
+    updateMessage(personaId, taskId, { checked: !isCurrentlyCompleted });
   };
 
   const renderTask = ({ item }: { item: Task }) => {
@@ -95,7 +100,7 @@ export default function TasksScreen() {
         style={[
           styles.taskItem,
         ]}
-        onPress={() => handleCompleteTask(item.personaId, item.id)}
+        onPress={() => handleToggleTask(item.personaId, item.id)}
       >
         {isCompleted ? (
           <CheckSquare size={24} color={isDark ? '#888888' : '#666666'} />

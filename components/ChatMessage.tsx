@@ -182,6 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 8,
+    paddingVertical: 6,
     flex: 1,
   },
   questionContainer: {
