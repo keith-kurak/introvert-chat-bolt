@@ -36,6 +36,11 @@ export default function PersonasScreen() {
     count + (persona.messages?.filter(msg => msg.type === 'checkbox' && !msg.checked).length || 0), 0
   );
 
+  // Get personas with open tasks
+  const personasWithOpenTasks = personas.filter(persona => 
+    persona.messages?.some(msg => msg.type === 'checkbox' && !msg.checked)
+  );
+
   // Sort personas: favorites first, then by most recent message
   const sortedPersonas = [...personas].sort((a, b) => {
     // Favorites first
@@ -121,6 +126,13 @@ export default function PersonasScreen() {
         ]}>
           {openTasksCount} Open Task{openTasksCount !== 1 ? 's' : ''}
         </Text>
+        <View style={styles.personaEmojis}>
+          {personasWithOpenTasks.map(persona => (
+            <Text key={persona.id} style={styles.personaEmoji}>
+              {persona.emoji}
+            </Text>
+          ))}
+        </View>
       </TouchableOpacity>
     );
   };
@@ -273,5 +285,14 @@ const styles = StyleSheet.create({
   openTasksText: {
     fontSize: 16,
     fontWeight: '500',
+  },
+  personaEmojis: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    marginLeft: 'auto',
+  },
+  personaEmoji: {
+    fontSize: 16,
   },
 });
