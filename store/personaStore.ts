@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Persona, Message } from '@/types';
 import { generateId } from '@/utils/helpers';
+import { demoPersonas } from './demoData';
 
 // Default personas to add when app is first launched
 const defaultPersonas: Omit<Persona, 'id' | 'messages'>[] = [
@@ -129,6 +130,12 @@ export const usePersonaStore = create<PersonaState>()(
         
         // Only add default personas if there are none and we haven't initialized before
         if (personas.length === 0 && !initialized) {
+          // If IS_DEMO is set to 1, use demo data instead of default personas
+          if (process.env.IS_DEMO === '1') {
+            set({ personas: demoPersonas, initialized: true });
+            return;
+          }
+          
           defaultPersonas.forEach(persona => {
             get().addPersona(persona);
           });

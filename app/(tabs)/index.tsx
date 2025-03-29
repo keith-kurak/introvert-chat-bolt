@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { router } from 'expo-router';
-import { Plus } from 'lucide-react-native';
+import { Plus, CheckSquare } from 'lucide-react-native';
 import { usePersonaStore } from '@/store/personaStore';
 import { PersonaListItem } from '@/components/PersonaListItem';
 import { HeaderContainer } from '@/components/HeaderContainer';
@@ -30,6 +30,11 @@ export default function PersonasScreen() {
   }, [initializeDefaultPersonas]);
 
   const insets = useSafeAreaInsets();
+
+  // Get count of open tasks
+  const openTasksCount = personas.reduce((count, persona) => 
+    count + (persona.messages?.filter(msg => msg.type === 'checkbox' && !msg.checked).length || 0), 0
+  );
 
   // Sort personas: favorites first, then by most recent message
   const sortedPersonas = [...personas].sort((a, b) => {
@@ -98,6 +103,28 @@ export default function PersonasScreen() {
     setSelectedPersona(null);
   };
 
+  const renderOpenTasksOption = () => {
+    if (openTasksCount === 0) return null;
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.openTasksOption,
+          { backgroundColor: isDark ? '#2A2A2A' : '#FFFFFF' }
+        ]}
+        onPress={() => router.push('/tasks')}
+      >
+        <CheckSquare size={24} color={isDark ? '#FFFFFF' : '#000000'} />
+        <Text style={[
+          styles.openTasksText,
+          { color: isDark ? '#FFFFFF' : '#000000' }
+        ]}>
+          {openTasksCount} Open Task{openTasksCount !== 1 ? 's' : ''}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View
       style={[
@@ -143,28 +170,31 @@ export default function PersonasScreen() {
           </Text>
         </View>
       ) : (
-        <FlatList
-          data={sortedPersonas}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <PersonaListItem
-              persona={item}
-              isSelected={selectedPersona === item.id}
-              onPress={() => router.push(`/persona/chat?id=${item.id}`)}
-              onLongPress={() => handleLongPress(item.id)}
-            />
-          )}
-          contentContainerStyle={styles.list}
-          ItemSeparatorComponent={() => (
-            <View
-              style={{
-                height: spacing.hairline,
-                backgroundColor: colors.border,
-                marginHorizontal: spacing.md,
-              }}
-            />
-          )}
-        />
+        <>
+          {renderOpenTasksOption()}
+          <FlatList
+            data={sortedPersonas}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <PersonaListItem
+                persona={item}
+                isSelected={selectedPersona === item.id}
+                onPress={() => router.push(`/persona/chat?id=${item.id}`)}
+                onLongPress={() => handleLongPress(item.id)}
+              />
+            )}
+            contentContainerStyle={styles.list}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{
+                  height: spacing.hairline,
+                  backgroundColor: colors.border,
+                  marginHorizontal: spacing.md,
+                }}
+              />
+            )}
+          />
+        </>
       )}
 
       <TouchableOpacity
@@ -233,5 +263,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  openTasksOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: spacing.md,
+    marginHorizontal: spacing.md,
+    marginVertical: spacing.sm,
+    borderRadius: 8,
+    gap: spacing.sm,
+  },
+  openTasksText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
