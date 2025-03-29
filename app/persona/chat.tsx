@@ -239,67 +239,67 @@ export default function ChatScreen() {
 
   return (
     <KeyboardAvoidingView
-        behavior="padding"
-        style={{ flex: 1 }}
-      >
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
-      ]}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
     >
-      <HeaderContainer>
-        {selectedMessage ? (
-          <HeaderOptions
-            isDark={isDark}
-            isEditing={isEditing}
-            onCancel={handleCancelSelection}
-            onEdit={handleEditMessage}
-            onDelete={handleDeleteMessage}
-            onSave={isEditing ? handleSend : undefined}
-          />
-        ) : showMessageTypes ? (
-          <MessageTypeHeaderSelector
-            isDark={isDark}
-            messageType={messageType}
-            onClose={() => {
-              setShowMessageTypes(false);
-              Keyboard.dismiss();
-            }}
-            onMessageTypeSelect={handleMessageTypeSelect}
-          />
-        ) : (
-          <>
-            <TouchableOpacity
-              onPress={() => router.back()}
-              style={styles.headerButton}
-            >
-              <ArrowLeft size={24} color={isDark ? '#FFFFFF' : '#000000'} />
-            </TouchableOpacity>
-            <View style={styles.personaInfo}>
-              <Avatar
-                uri={persona.avatar || null}
-                name={persona.name}
-                size={32}
-                color={persona.color}
-                emoji={persona.emoji}
-              />
-              <Text
-                style={[
-                  styles.personaName,
-                  {
-                    color: persona.color || (isDark ? '#FFFFFF' : '#000000'),
-                    marginLeft: 8,
-                  },
-                ]}
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: isDark ? '#121212' : '#F5F5F5' },
+        ]}
+      >
+        <HeaderContainer>
+          {selectedMessage ? (
+            <HeaderOptions
+              isDark={isDark}
+              isEditing={isEditing}
+              onCancel={handleCancelSelection}
+              onEdit={handleEditMessage}
+              onDelete={handleDeleteMessage}
+              onSave={isEditing ? handleSend : undefined}
+            />
+          ) : showMessageTypes ? (
+            <MessageTypeHeaderSelector
+              isDark={isDark}
+              messageType={messageType}
+              onClose={() => {
+                setShowMessageTypes(false);
+                Keyboard.dismiss();
+              }}
+              onMessageTypeSelect={handleMessageTypeSelect}
+            />
+          ) : (
+            <>
+              <TouchableOpacity
+                onPress={() => router.back()}
+                style={styles.headerButton}
               >
-                {persona.name}
-              </Text>
-            </View>
-            <View style={{ width: 40 }} />
-          </>
-        )}
-      </HeaderContainer>
+                <ArrowLeft size={24} color={isDark ? '#FFFFFF' : '#000000'} />
+              </TouchableOpacity>
+              <View style={styles.personaInfo}>
+                <Avatar
+                  uri={persona.avatar || null}
+                  name={persona.name}
+                  size={32}
+                  color={persona.color}
+                  emoji={persona.emoji}
+                />
+                <Text
+                  style={[
+                    styles.personaName,
+                    {
+                      color: persona.color || (isDark ? '#FFFFFF' : '#000000'),
+                      marginLeft: 8,
+                    },
+                  ]}
+                >
+                  {persona.name}
+                </Text>
+              </View>
+              <View style={{ width: 40 }} />
+            </>
+          )}
+        </HeaderContainer>
         <FlatList
           ref={flatListRef}
           data={sortedMessages}
@@ -367,7 +367,7 @@ export default function ChatScreen() {
             <Send size={24} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
-    </View>
+      </View>
     </KeyboardAvoidingView>
   );
 }
