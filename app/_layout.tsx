@@ -35,10 +35,7 @@ export default function RootLayout() {
               name="persona/chat"
               options={{ animation: 'slide_from_right' }}
             />
-            <Stack.Screen
-              name="tasks"
-              options={{ presentation: 'modal' }}
-            />
+            <Stack.Screen name="tasks" options={{ presentation: 'modal' }} />
             <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
           </Stack>
         </ThemeProvider>
