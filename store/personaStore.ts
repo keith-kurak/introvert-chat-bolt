@@ -48,7 +48,9 @@ interface PersonaState {
     updates: Partial<Message>
   ) => void;
   deleteMessage: (personaId: string, messageId: string) => void;
-  initializeDefaultPersonas: (migrationPersonas?: Persona[]) => void;
+  setHasHydrated: (state: boolean) => void;
+  hasHydrated: boolean;
+  initializeDefaultPersonas: (previousPersonas: Persona[]) => void;
 }
 
 export const usePersonaStore = create<PersonaState>()(
@@ -56,6 +58,12 @@ export const usePersonaStore = create<PersonaState>()(
     (set, get) => ({
       personas: [],
       initialized: false,
+      hasHydrated: false,
+      setHasHydrated: (state) => {
+        set({
+          hasHydrated: state,
+        });
+      },
 
       addPersona: (personaData) =>
         set((state) => ({
@@ -140,28 +148,30 @@ export const usePersonaStore = create<PersonaState>()(
             return persona;
           }),
         })),
-
-      initializeDefaultPersonas: (migrationPersonas?: Persona[]) => {
+      initializeDefaultPersonas: (previousPersonas: Persona[]) => {
         const { personas, initialized } = get();
 
-        // If IS_DEMO is set to 1, use demo data instead of default personas
         if (process.env.EXPO_PUBLIC_IS_DEMO === '1') {
           set({ personas: demoPersonas, initialized: true });
           return;
         }
 
-        if (migrationPersonas) {
-          set({ personas: migrationPersonas, initialized: true });
+        console.log('previousPersonas', previousPersonas);
+
+        if (initialized) {
           return;
         }
 
-        // Only add default personas if there are none and we haven't initialized before
-        if (personas.length === 0 && !initialized) {
+        if (personas.length === 0) {
+          if (previousPersonas.length > 0) {
+            set({ personas: previousPersonas, initialized: true });
+            return;
+          }
+
           defaultPersonas.forEach((persona) => {
             get().addPersona(persona);
           });
 
-          // Mark as initialized so we don't add defaults again
           set({ initialized: true });
         }
       },
@@ -169,21 +179,8 @@ export const usePersonaStore = create<PersonaState>()(
     {
       name: 'introvert-chat-personas',
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          setTimeout(async () => {
-            const oldStore = JSON.parse(
-              (await AsyncStorageOld.getItem('introvert-chat-personas')) || '{}'
-            );
-            console.log(oldStore);
-            AsyncStorageOld.removeItem('introvert-chat-personas');
-            if (oldStore.state?.personas) {
-              state.initializeDefaultPersonas(oldStore.state?.personas);
-            } else {
-              state.initializeDefaultPersonas();
-            }
-          }, 100);
-        }
+      onRehydrateStorage: (state) => {
+        return () => state.setHasHydrated(true);
       },
     }
   )
