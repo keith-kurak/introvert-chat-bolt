@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import '@/lib/unistyles';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
