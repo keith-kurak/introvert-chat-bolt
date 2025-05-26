@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorageOld from '@react-native-async-storage/async-storage';
+import AsyncStorage from 'expo-sqlite/kv-store';
 import { Persona, Message } from '@/types';
 import { generateId } from '@/utils/helpers';
 import { demoPersonas } from './demoData';
@@ -11,25 +12,25 @@ const defaultPersonas: Omit<Persona, 'id' | 'messages'>[] = [
     name: 'Creative',
     color: '#3B82F6', // blue-500
     favorite: false,
-    emoji: '🎨'
+    emoji: '🎨',
   },
   {
     name: 'Work',
     color: '#EF4444', // red-500
     favorite: false,
-    emoji: '👔'
+    emoji: '👔',
   },
   {
     name: 'Home Improvement',
     color: '#8B5CF6', // purple-500
     favorite: false,
-    emoji: '🏠'
+    emoji: '🏠',
   },
   {
     name: 'Bookworm',
     color: '#22C55E', // green-500
     favorite: false,
-    emoji: '📚'
+    emoji: '📚',
   },
 ];
 
@@ -41,9 +42,13 @@ interface PersonaState {
   deletePersona: (id: string) => void;
   toggleFavorite: (id: string) => void;
   addMessage: (personaId: string, messageData: Omit<Message, 'id'>) => void;
-  updateMessage: (personaId: string, messageId: string, updates: Partial<Message>) => void;
+  updateMessage: (
+    personaId: string,
+    messageId: string,
+    updates: Partial<Message>
+  ) => void;
   deleteMessage: (personaId: string, messageId: string) => void;
-  initializeDefaultPersonas: () => void;
+  initializeDefaultPersonas: (migrationPersonas?: Persona[]) => void;
 }
 
 export const usePersonaStore = create<PersonaState>()(
@@ -51,81 +56,92 @@ export const usePersonaStore = create<PersonaState>()(
     (set, get) => ({
       personas: [],
       initialized: false,
-      
-      addPersona: (personaData) => set((state) => ({
-        personas: [
-          ...state.personas,
-          {
-            id: generateId(),
-            ...personaData,
-            messages: [],
-          },
-        ],
-      })),
-      
-      updatePersona: (id, updates) => set((state) => ({
-        personas: state.personas.map((persona) =>
-          persona.id === id ? { ...persona, ...updates } : persona
-        ),
-      })),
-      
-      deletePersona: (id) => set((state) => ({
-        personas: state.personas.filter((persona) => persona.id !== id),
-      })),
-      
-      toggleFavorite: (id) => set((state) => ({
-        personas: state.personas.map((persona) =>
-          persona.id === id ? { ...persona, favorite: !persona.favorite } : persona
-        ),
-      })),
-      
-      addMessage: (personaId, messageData) => set((state) => ({
-        personas: state.personas.map((persona) => {
-          if (persona.id === personaId) {
-            return {
-              ...persona,
-              messages: [
-                ...(persona.messages || []),
-                {
-                  id: generateId(),
-                  ...messageData,
-                },
-              ],
-            };
-          }
-          return persona;
-        }),
-      })),
-      
-      updateMessage: (personaId, messageId, updates) => set((state) => ({
-        personas: state.personas.map((persona) => {
-          if (persona.id === personaId) {
-            return {
-              ...persona,
-              messages: (persona.messages || []).map((message) =>
-                message.id === messageId ? { ...message, ...updates } : message
-              ),
-            };
-          }
-          return persona;
-        }),
-      })),
-      
-      deleteMessage: (personaId, messageId) => set((state) => ({
-        personas: state.personas.map((persona) => {
-          if (persona.id === personaId) {
-            return {
-              ...persona,
-              messages: (persona.messages || []).filter(
-                (message) => message.id !== messageId
-              ),
-            };
-          }
-          return persona;
-        }),
-      })),
 
-      initializeDefaultPersonas: () => {
+      addPersona: (personaData) =>
+        set((state) => ({
+          personas: [
+            ...state.personas,
+            {
+              id: generateId(),
+              ...personaData,
+              messages: [],
+            },
+          ],
+        })),
+
+      updatePersona: (id, updates) =>
+        set((state) => ({
+          personas: state.personas.map((persona) =>
+            persona.id === id ? { ...persona, ...updates } : persona
+          ),
+        })),
+
+      deletePersona: (id) =>
+        set((state) => ({
+          personas: state.personas.filter((persona) => persona.id !== id),
+        })),
+
+      toggleFavorite: (id) =>
+        set((state) => ({
+          personas: state.personas.map((persona) =>
+            persona.id === id
+              ? { ...persona, favorite: !persona.favorite }
+              : persona
+          ),
+        })),
+
+      addMessage: (personaId, messageData) =>
+        set((state) => ({
+          personas: state.personas.map((persona) => {
+            if (persona.id === personaId) {
+              return {
+                ...persona,
+                messages: [
+                  ...(persona.messages || []),
+                  {
+                    id: generateId(),
+                    ...messageData,
+                  },
+                ],
+              };
+            }
+            return persona;
+          }),
+        })),
+
+      updateMessage: (personaId, messageId, updates) =>
+        set((state) => ({
+          personas: state.personas.map((persona) => {
+            if (persona.id === personaId) {
+              return {
+                ...persona,
+                messages: (persona.messages || []).map((message) =>
+                  message.id === messageId
+                    ? { ...message, ...updates }
+                    : message
+                ),
+              };
+            }
+            return persona;
+          }),
+        })),
+
+      deleteMessage: (personaId, messageId) =>
+        set((state) => ({
+          personas: state.personas.map((persona) => {
+            if (persona.id === personaId) {
+              return {
+                ...persona,
+                messages: (persona.messages || []).filter(
+                  (message) => message.id !== messageId
+                ),
+              };
+            }
+            return persona;
+          }),
+        })),
+
+      initializeDefaultPersonas: (migrationPersonas?: Persona[]) => {
         const { personas, initialized } = get();
 
         // If IS_DEMO is set to 1, use demo data instead of default personas
@@ -133,14 +149,18 @@ export const usePersonaStore = create<PersonaState>()(
           set({ personas: demoPersonas, initialized: true });
           return;
         }
-        
+
+        if (migrationPersonas) {
+          set({ personas: migrationPersonas, initialized: true });
+          return;
+        }
+
         // Only add default personas if there are none and we haven't initialized before
         if (personas.length === 0 && !initialized) {
-          
-          defaultPersonas.forEach(persona => {
+          defaultPersonas.forEach((persona) => {
             get().addPersona(persona);
           });
-          
+
           // Mark as initialized so we don't add defaults again
           set({ initialized: true });
         }
@@ -150,10 +170,18 @@ export const usePersonaStore = create<PersonaState>()(
       name: 'introvert-chat-personas',
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
-        // When storage is rehydrated, check if we need to initialize default personas
         if (state) {
-          setTimeout(() => {
-            state.initializeDefaultPersonas();
+          setTimeout(async () => {
+            const oldStore = JSON.parse(
+              (await AsyncStorageOld.getItem('introvert-chat-personas')) || '{}'
+            );
+            console.log(oldStore);
+            AsyncStorageOld.removeItem('introvert-chat-personas');
+            if (oldStore.state?.personas) {
+              state.initializeDefaultPersonas(oldStore.state?.personas);
+            } else {
+              state.initializeDefaultPersonas();
+            }
           }, 100);
         }
       },
