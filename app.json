@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#5C8EDC"
       },
-      "package": "com.keithkurak.introvertchat"
+      "package": "com.keithkurak.introvertchat",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",

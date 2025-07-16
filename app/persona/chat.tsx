@@ -409,8 +409,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#DDDDDD',
     alignItems: 'flex-end',
   },
   input: {
