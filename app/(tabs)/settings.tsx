@@ -16,6 +16,7 @@ import { useUpdates, reloadAsync } from 'expo-updates';
 import * as ImagePicker from 'expo-image-picker';
 import colors from '@/theme/colors';
 import { HeaderContainer } from '@/components/HeaderContainer';
+import * as Application from 'expo-application';
 
 export default function SettingsScreen() {
   const colorScheme = useColorScheme();
@@ -136,7 +137,7 @@ export default function SettingsScreen() {
                 { color: isDark ? '#FFFFFF' : '#000000' },
               ]}
             >
-              Introvert Chat v1.0.0
+              Introvert Chat v{Application.nativeApplicationVersion || '1.0'}
             </Text>
             <Text
               style={[
