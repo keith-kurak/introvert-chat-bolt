@@ -40,9 +40,12 @@ export default function PersonasScreen() {
         console.log('prevStorage', prevStorage.state.personas.length);
         if (prevStorage.state?.personas?.length > 0) {
           console.log('blah');
+          // init previous personas as "defaults" for new store
           initializeDefaultPersonas(prevStorage.state.personas);
           await AsyncStorageOld.removeItem('introvert-chat-personas');
         } else {
+          // otherwise initialize with empty array, which will trigger default personas
+          // if there are none already
           initializeDefaultPersonas([]);
         }
       }
