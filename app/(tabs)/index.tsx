@@ -16,29 +16,58 @@ import { HeaderContainer } from '@/components/HeaderContainer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HeaderOptions } from '@/components/HeaderOptions';
 import { spacing, colors } from '@/theme';
+import AsyncStorageOld from '@react-native-async-storage/async-storage';
 
 export default function PersonasScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { personas, deletePersona, toggleFavorite, initializeDefaultPersonas } =
-    usePersonaStore();
+  const {
+    personas,
+    deletePersona,
+    toggleFavorite,
+    hasHydrated,
+    initializeDefaultPersonas,
+  } = usePersonaStore();
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
 
   // Initialize default personas if needed
   useEffect(() => {
-    initializeDefaultPersonas();
-  }, [initializeDefaultPersonas]);
+    if (hasHydrated) {
+      async function doStuff() {
+        const prevStorage = JSON.parse(
+          (await AsyncStorageOld.getItem('introvert-chat-personas')) || '{}'
+        );
+        console.log('prevStorage', prevStorage.state.personas.length);
+        if (prevStorage.state?.personas?.length > 0) {
+          console.log('blah');
+          // init previous personas as "defaults" for new store
+          initializeDefaultPersonas(prevStorage.state.personas);
+          await AsyncStorageOld.removeItem('introvert-chat-personas');
+        } else {
+          // otherwise initialize with empty array, which will trigger default personas
+          // if there are none already
+          initializeDefaultPersonas([]);
+        }
+      }
+      doStuff();
+    }
+  }, [hasHydrated]);
 
   const insets = useSafeAreaInsets();
 
   // Get count of open tasks
-  const openTasksCount = personas.reduce((count, persona) => 
-    count + (persona.messages?.filter(msg => msg.type === 'checkbox' && !msg.checked).length || 0), 0
+  const openTasksCount = personas.reduce(
+    (count, persona) =>
+      count +
+      (persona.messages?.filter(
+        (msg) => msg.type === 'checkbox' && !msg.checked
+      ).length || 0),
+    0
   );
 
   // Get personas with open tasks
-  const personasWithOpenTasks = personas.filter(persona => 
-    persona.messages?.some(msg => msg.type === 'checkbox' && !msg.checked)
+  const personasWithOpenTasks = personas.filter((persona) =>
+    persona.messages?.some((msg) => msg.type === 'checkbox' && !msg.checked)
   );
 
   // Sort personas: favorites first, then by most recent message
@@ -115,19 +144,21 @@ export default function PersonasScreen() {
       <TouchableOpacity
         style={[
           styles.openTasksOption,
-          { backgroundColor: isDark ? '#2A2A2A' : '#FFFFFF' }
+          { backgroundColor: isDark ? '#2A2A2A' : '#FFFFFF' },
         ]}
         onPress={() => router.push('/tasks')}
       >
         <CheckSquare size={24} color={isDark ? '#FFFFFF' : '#000000'} />
-        <Text style={[
-          styles.openTasksText,
-          { color: isDark ? '#FFFFFF' : '#000000' }
-        ]}>
+        <Text
+          style={[
+            styles.openTasksText,
+            { color: isDark ? '#FFFFFF' : '#000000' },
+          ]}
+        >
           {openTasksCount} Open Task{openTasksCount !== 1 ? 's' : ''}
         </Text>
         <View style={styles.personaEmojis}>
-          {personasWithOpenTasks.map(persona => (
+          {personasWithOpenTasks.map((persona) => (
             <Text key={persona.id} style={styles.personaEmoji}>
               {persona.emoji}
             </Text>
@@ -241,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
-    verticalAlign: "middle"
+    verticalAlign: 'middle',
   },
   list: {
     paddingBottom: 80,

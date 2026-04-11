@@ -240,6 +240,7 @@ export default function ChatScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={-1 * insets.bottom}
       style={{ flex: 1 }}
     >
       <View
@@ -335,7 +336,7 @@ export default function ChatScreen() {
           style={[
             styles.inputContainer,
             {
-              paddingBottom: insets.bottom,
+              paddingBottom: insets.bottom + 8,
               backgroundColor: isDark ? '#1E1E1E' : '#FFFFFF',
             },
           ]}
@@ -408,8 +409,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
-    borderTopWidth: 1,
-    borderTopColor: '#DDDDDD',
     alignItems: 'flex-end',
   },
   input: {

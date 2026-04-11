@@ -6,15 +6,17 @@ module.exports = ({ config }) => {
 
   const plugins = config.plugins || [];
   plugins.push([
-    "expo-dev-client",
-        {
-          "addGeneratedScheme	": process.env.APP_VARIANT === "DEV"
-        }
-  ])
+    'expo-dev-client',
+    {
+      'addGeneratedScheme	': process.env.APP_VARIANT === 'DEV',
+    },
+  ]);
 
   const newConfig = {
     ...config,
-    name: process.env.APP_VARIANT ? ("IC" + process.env.APP_VARIANT) : config.name,
+    name: process.env.APP_VARIANT
+      ? 'IC' + process.env.APP_VARIANT
+      : config.name,
     ios: {
       ...config.ios,
       bundleIdentifier: config.ios.bundleIdentifier + bundleIdSuffix,

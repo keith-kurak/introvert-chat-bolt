@@ -2,7 +2,7 @@
   "expo": {
     "name": "Introvert Chat",
     "slug": "introvert-chat",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#5C8EDC"
       },
-      "package": "com.keithkurak.introvertchat"
+      "package": "com.keithkurak.introvertchat",
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -58,7 +59,8 @@
             "deploymentTarget": "16.0"
           }
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/context/ThemeContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import '@/lib/unistyles';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -35,10 +36,7 @@ export default function RootLayout() {
               name="persona/chat"
               options={{ animation: 'slide_from_right' }}
             />
-            <Stack.Screen
-              name="tasks"
-              options={{ presentation: 'modal' }}
-            />
+            <Stack.Screen name="tasks" options={{ presentation: 'modal' }} />
             <Stack.Screen name="settings" options={{ presentation: 'modal' }} />
           </Stack>
         </ThemeProvider>
